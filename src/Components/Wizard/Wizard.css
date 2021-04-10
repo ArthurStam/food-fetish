@@ -1,0 +1,11 @@
+.maxPrice {
+  position: relative;
+}
+
+.maxPriceLabel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-right: inherit;
+  padding-top: inherit;
+}
