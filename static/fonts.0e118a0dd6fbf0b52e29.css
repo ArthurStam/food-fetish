@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'TT Commons';
+  src: url(../static/TT_Commons_Medium.fe3263a6d4902c9dba7a9ec33ec2bedb.woff2) format('woff2'),
+    url(../static/TT_Commons_Medium.3ffbc5a7fd64e9908f2a7cb9957b0e4b.woff) format('woff');
+  font-weight: 500;
+}
+
+/* TODO: Здесь неправильная жирность. Для DemiBold должна быть 600 */
+@font-face {
+  font-family: 'TT Commons';
+  src: url(../static/TT_Commons_DemiBold.07669ea8447c769535992e146edb5f43.woff2) format('woff2'),
+    url(../static/TT_Commons_DemiBold.addf52eced381ab7be23324e85c118c6.woff) format('woff');
+  font-weight: 800;
+}
+
+
+/*# fonts.0e118a0dd6fbf0b52e29.css.map*/
