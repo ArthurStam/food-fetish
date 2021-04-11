@@ -5,6 +5,7 @@
     "@vkontakte/vk-bridge": "^2.4.1",
     "@vkontakte/vkjs": "^0.21.0",
     "@vkontakte/vkui": "^4.5.0",
+    "airtable": "^0.10.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

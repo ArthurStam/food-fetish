@@ -1,30 +1,41 @@
 import React, { useState } from 'react';
 import {
-  useAdaptivity,
   AppRoot,
-  SplitLayout,
-  SplitCol,
-  ViewWidth,
-  View,
-  PanelHeader,
+  Button,
   Panel,
+  PanelHeader,
+  PanelHeaderButton,
+  Placeholder,
+  Platform,
   Root,
-  Button, PanelHeaderButton,
+  SplitCol,
+  SplitLayout,
+  useAdaptivity,
+  usePlatform,
+  View,
+  ViewWidth,
+  withAdaptivity,
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import { Wizard } from './Components/Wizard/Wizard';
-import { Icon28SettingsOutline } from '@vkontakte/icons';
+import { Wizard, WizardSettings } from './Components/Wizard/Wizard';
+import { Icon28SettingsOutline, Icon56CheckCircleOutline } from '@vkontakte/icons';
 
-export const App = () => {
+const Airtable = require('airtable');
+const base = new Airtable({ apiKey: 'keyVWFbLtlqU1tMht' }).base('appyqSjavyDbO4pmV');
+
+export const App = withAdaptivity(() => {
   const { viewWidth } = useAdaptivity();
   const [panel, setPanel] = useState('wizard');
   const [view, setView] = useState('main');
-  const [settings, setSettings] = useState({});
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [settings, setSettings]: [WizardSettings, any] = useState({});
+  const platform = usePlatform();
 
   return (
     <AppRoot>
-      <SplitLayout header={<PanelHeader separator={false} />}>
-        <SplitCol animate={true} spaced={viewWidth > ViewWidth.MOBILE}>
+      <SplitLayout header={platform !== Platform.VKCOM && <PanelHeader separator={false} />}>
+        <SplitCol animate={viewWidth <= ViewWidth.MOBILE} spaced={viewWidth > ViewWidth.MOBILE}>
           <Root activeView={view}>
             <View id="main" activePanel={panel}>
               <Wizard id="wizard" onSubmit={(result) => {
@@ -34,12 +45,31 @@ export const App = () => {
               <Panel id="result" centered>
                 <PanelHeader
                   left={
-                    <PanelHeaderButton onClick={() => setView('settings')}>
+                    !sent && !sending && <PanelHeaderButton onClick={() => setView('settings')}>
                       <Icon28SettingsOutline />
                     </PanelHeaderButton>
                   }
                 />
-                <Button size="l">Хочу есть</Button>
+                {!sent && <Button disabled={sending} onClick={() => {
+                  setSending(true);
+                  const result = {
+                    name: settings.name,
+                    address: settings.address,
+                    kitchens: settings.kitchens.map((item) => item.label).toString(),
+                    blackListProducts: settings.blackListProducts.map((item) => item.label).toString(),
+                    maxPrice: settings.maxPrice.toString(),
+                  };
+                  base('Table 1').create([{ fields: result }], () => {
+                    setSent(true);
+                  });
+                }} size="l">Хочу есть</Button>}
+                {sent &&
+                  <Placeholder header="Спасибо за заявку!" icon={<Icon56CheckCircleOutline fill="var(--accent)" />}>
+                    Нам важно знать, что сервис вам интересен.
+                    <br />
+                    Проект находится в разработке. Будем держать вас в курсе!
+                  </Placeholder>
+                }
               </Panel>
             </View>
             <View id="settings" activePanel="settings">
@@ -54,4 +84,4 @@ export const App = () => {
       </SplitLayout>
     </AppRoot>
   );
-};
+}, { viewWidth: true });
